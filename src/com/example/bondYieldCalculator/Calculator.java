@@ -5,206 +5,103 @@ package com.example.bondYieldCalculator;
 import java.awt.event.*;
         import javax.swing.*;
         import java.awt.*;
-class calculator extends JFrame implements ActionListener {
-    public static double calcPrice(double couplon, int years, double face, double rate){
-        double price = 0;
-        for(int i = 0; i < years; i++){
-            price += (face * couplon) / Math.pow((1+rate), i+1);
-        }
-        price += face / Math.pow((1+rate), years);
-        return price;
-    }
-    // create a frame
+
+import static java.awt.SystemColor.text;
+
+class text extends JFrame implements ActionListener {
+    static JTextField coupon, years, face, rate;
+
+    // JFrame
     static JFrame f;
 
-    // create a textfield
-    static JTextField l;
+    // JButton
+    static JButton b;
 
-    // store operator and operands
-    String s0, s1, s2;
+    // label to display text
+    static JLabel l, labelCoupon, labelYears, labelFace, labelRate;
 
     // default constructor
-    calculator()
+    text()
     {
-        s0 = s1 = s2 = "";
     }
 
-    // main function
-    public static void main(String args[])
+
+    // main class
+    public static void main(String[] args)
     {
-        // create a frame
-        f = new JFrame("calculator");
+        // create a new frame to store text field and button
+        f = new JFrame("Bond Yield Calculator");
 
-        try {
-            // set look and feel
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+        // create a label to display text
+        l = new JLabel("nothing entered");
+        labelCoupon = new JLabel("Enter Coupon:");
+        labelYears = new JLabel("Enter Years:");
+        labelFace = new JLabel("Enter Face:");
+        labelRate = new JLabel("Enter Rate:");
 
-        // create a object of class
-        calculator c = new calculator();
+        // create a new button
+        b = new JButton("submit");
 
-        // create a textfield
-        l = new JTextField(16);
+        // create a object of the text class
+        text te = new text();
 
-        // set the textfield to non editable
-        l.setEditable(false);
+        // addActionListener to button
+        b.addActionListener(te);
 
-        // create number buttons and some operators
-        JButton b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, ba, bs, bd, bm, be, beq, beq1;
+        // create a object of JTextField with 16 columns and a given initial text
+        coupon = new JTextField("0.00", 8);
+        years = new JTextField("0", 8);
+        face = new JTextField("0.00", 8);
+        rate = new JTextField("0.00", 8);
 
-        // create number buttons
-        b0 = new JButton("0");
-        b1 = new JButton("1");
-        b2 = new JButton("2");
-        b3 = new JButton("3");
-        b4 = new JButton("4");
-        b5 = new JButton("5");
-        b6 = new JButton("6");
-        b7 = new JButton("7");
-        b8 = new JButton("8");
-        b9 = new JButton("9");
-
-        // equals button
-        beq1 = new JButton("=");
-
-        // create operator buttons
-        ba = new JButton("+");
-        bs = new JButton("-");
-        bd = new JButton("/");
-        bm = new JButton("*");
-        beq = new JButton("C");
-
-        // create . button
-        be = new JButton(".");
-
-        // create a panel
+        // create a panel to add buttons and textfield
         JPanel p = new JPanel();
 
-        // add action listeners
-        bm.addActionListener(c);
-        bd.addActionListener(c);
-        bs.addActionListener(c);
-        ba.addActionListener(c);
-        b9.addActionListener(c);
-        b8.addActionListener(c);
-        b7.addActionListener(c);
-        b6.addActionListener(c);
-        b5.addActionListener(c);
-        b4.addActionListener(c);
-        b3.addActionListener(c);
-        b2.addActionListener(c);
-        b1.addActionListener(c);
-        b0.addActionListener(c);
-        be.addActionListener(c);
-        beq.addActionListener(c);
-        beq1.addActionListener(c);
-
-        // add elements to panel
+        // add buttons and textfield to panel
+        p.add(labelCoupon);
+        p.add(coupon);
+        p.add(labelYears);
+        p.add(years);
+        p.add(labelFace);
+        p.add(face);
+        p.add(labelRate);
+        p.add(rate);
+        p.add(b);
         p.add(l);
-        p.add(ba);
-        p.add(b1);
-        p.add(b2);
-        p.add(b3);
-        p.add(bs);
-        p.add(b4);
-        p.add(b5);
-        p.add(b6);
-        p.add(bm);
-        p.add(b7);
-        p.add(b8);
-        p.add(b9);
-        p.add(bd);
-        p.add(be);
-        p.add(b0);
-        p.add(beq);
-        p.add(beq1);
-
-        // set Background of panel
-        p.setBackground(Color.blue);
 
         // add panel to frame
         f.add(p);
 
-        f.setSize(200, 220);
+        // set the size of frame
+        f.setSize(220, 300);
+
         f.show();
     }
+
+    // if the button is pressed
     public void actionPerformed(ActionEvent e)
     {
+        double coup, fac, rat, price;
+        int yea;
         String s = e.getActionCommand();
+        if (s.equals("submit")) {
+            // set the text of the label to the text of the field
+            coup = Double.parseDouble(coupon.getText());
+            yea = Integer.parseInt(years.getText());
+            fac = Double.parseDouble(face.getText());
+            rat = Double.parseDouble(rate.getText());
+            price = calcPrice(coup, yea, fac, rat);
 
-        // if the value is a number
-        if ((s.charAt(0) >= '0' && s.charAt(0) <= '9') || s.charAt(0) == '.') {
-            // if operand is present then add to second no
-            if (!s1.equals(""))
-                s2 = s2 + s;
-            else
-                s0 = s0 + s;
-
-            // set the value of text
-            l.setText(s0 + s1 + s2);
+            l.setText(String.format("%.7f",price));
         }
-        else if (s.charAt(0) == 'C') {
-            // clear the one letter
-            s0 = s1 = s2 = "";
+    }
 
-            // set the value of text
-            l.setText(s0 + s1 + s2);
+    public static double calcPrice(double coupon, int years, double face, double rate){
+        double price = 0;
+        for(int i = 0; i < years; i++){
+            price += (face * coupon) / Math.pow((1+rate), i+1);
         }
-        else if (s.charAt(0) == '=') {
-
-            double te;
-
-            // store the value in 1st
-            if (s1.equals("+"))
-                te = (Double.parseDouble(s0) + Double.parseDouble(s2));
-            else if (s1.equals("-"))
-                te = (Double.parseDouble(s0) - Double.parseDouble(s2));
-            else if (s1.equals("/"))
-                te = (Double.parseDouble(s0) / Double.parseDouble(s2));
-            else
-                te = (Double.parseDouble(s0) * Double.parseDouble(s2));
-
-            // set the value of text
-            l.setText(s0 + s1 + s2 + "=" + te);
-
-            // convert it to string
-            s0 = Double.toString(te);
-
-            s1 = s2 = "";
-        }
-        else {
-            // if there was no operand
-            if (s1.equals("") || s2.equals(""))
-                s1 = s;
-                // else evaluate
-            else {
-                double te;
-
-                // store the value in 1st
-                if (s1.equals("+"))
-                    te = (Double.parseDouble(s0) + Double.parseDouble(s2));
-                else if (s1.equals("-"))
-                    te = (Double.parseDouble(s0) - Double.parseDouble(s2));
-                else if (s1.equals("/"))
-                    te = (Double.parseDouble(s0) / Double.parseDouble(s2));
-                else
-                    te = (Double.parseDouble(s0) * Double.parseDouble(s2));
-
-                // convert it to string
-                s0 = Double.toString(te);
-
-                // place the operator
-                s1 = s;
-
-                // make the operand blank
-                s2 = "";
-            }
-
-            // set the value of text
-            l.setText(s0 + s1 + s2);
-        }
+        price += face / Math.pow((1+rate), years);
+        return price;
     }
 }
