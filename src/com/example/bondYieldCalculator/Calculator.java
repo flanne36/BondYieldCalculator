@@ -112,32 +112,12 @@ class text extends JFrame implements ActionListener {
     static double func(double x, double coupon,int years, double f, double p)
     {
         double c = coupon*f;
-        if(years < 3){
-            double ans = p*x + (p-(f+c));
-            for(int i = 1; i < years; i++){
-                ans += p*(Math.pow(x,i+1));
-            }
-            return ans;
+        double ans = -(c+f);
+        for(int i = years; i > 1; i--){
+            ans -= c*Math.pow((1+x), i-1);
         }
-        switch (years){
-            case 1:
-                return p*x + (p-(f+c));
-            case 2:
-                return p*x*x + x*(2*p-c) + (p-(2*c+f));
-            case 3:
-                return p*x*x*x + x*x*(3*p-c) + x*(3*p-3*c) + (p-(3*c+f));
-            case 4:
-                return p*x*x*x*x + x*x*x*(4*p-c) + x*x*(6*p-4*c) + x*(4*p-6*c) + (p-(4*c+f));
-            case 5:
-                return p*x*x*x*x*x + x*x*x*x*(5*p-c) + x*x*x*(10*p-5*c) + x*x*(10*p-10*c) + x*(5*p-10*c) + (p-(5*c+f));
-            case 6:
-                return p*x*x*x*x*x*x + x*x*x*x*x*(6*p-c) + x*x*x*x*(15*p-6*c) + x*x*x*(20*p-15*c) + x*x*(15*p-20*c) + x*(6*p-15*c) + (p-(6*c+f));
-            case 7:
-                return p*x*x*x*x*x*x*x + x*x*x*x*x*x*(7*p-c) + x*x*x*x*x*(21*p-7*c) + x*x*x*x*(35*p-21*c) + x*x*x*(35*p-35*c) + x*x*(21*p-35*c) + x*(7*p-21*c) + (p-(7*c+f));
-            default:
-                return 1;
-        }
-        //return -918.714*x*x-1737.428*x+281.286;
+        ans += p*Math.pow((1+x),years);
+        return ans;
     }
 
     // Derivative of the above function
@@ -180,8 +160,8 @@ class text extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        System.out.println(String.format("%.7f",calcPrice(.10,1,1000,.13896)));
-        System.out.println(String.format("%.7f",calcYield(0.10, 1, 1000, 965.79)));
+        System.out.println(String.format("%.7f",calcPrice(.10,1,1000,.15)));
+        System.out.println(String.format("%.7f",calcYield(0.10, 5, 1000, 832.4)));
     }
 
 
